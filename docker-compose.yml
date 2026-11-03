@@ -1,0 +1,24 @@
+# Compose is the usual way to run an app locally with Docker.
+# One file describes the image, ports, env, and data volume.
+
+services:
+  web:
+    build:
+      context: .          # build using the Dockerfile in this folder
+      dockerfile: Dockerfile
+    image: personal-task-board:local
+    container_name: task-board
+    ports:
+      # HOST:CONTAINER  — open http://localhost:8080 on your machine
+      - "${APP_PORT:-8080}:8000"
+    environment:
+      APP_NAME: ${APP_NAME:-Personal Task Board}
+      SECRET_KEY: ${SECRET_KEY:-dev-only-not-for-production}
+      DATABASE_PATH: /data/tasks.db
+    volumes:
+      # Named volume survives "docker compose down". Tasks stay after restart.
+      - task-data:/data
+    restart: unless-stopped
+
+volumes:
+  task-data:

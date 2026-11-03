@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ app_name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  </head>
+  <body>
+    <main class="shell">
+      <header>
+        <p class="eyebrow">Docker practice project</p>
+        <h1>{{ app_name }}</h1>
+        <p class="lede">
+          Add tasks, mark them done, and keep data inside a Docker volume.
+          If the container restarts and your tasks are still here, persistence is working.
+        </p>
+        <p id="health" class="health">Checking container health...</p>
+      </header>
+
+      <form id="task-form">
+        <label for="title">New task</label>
+        <div class="row">
+          <input id="title" name="title" type="text" maxlength="120" placeholder="Build the image, then run compose up" required />
+          <button type="submit">Add</button>
+        </div>
+      </form>
+
+      <ul id="tasks" class="tasks"></ul>
+    </main>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+  </body>
+</html>

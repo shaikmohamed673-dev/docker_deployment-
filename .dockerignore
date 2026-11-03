@@ -1,0 +1,13 @@
+.git
+.gitignore
+.cursor
+__pycache__
+*.pyc
+.venv
+venv
+.env
+data
+README.md
+LEARNING-GUIDE.md
+.DS_Store
+Thumbs.db
