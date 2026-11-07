@@ -27,10 +27,12 @@ personal-docker-lab/
 └── data/                   # local SQLite folder (ignored in git)
 ```
 
-## Quick start (after you finish LEARNING-GUIDE.md)
+## Quick start (Linux)
 
-```powershell
-copy .env.example .env
+Install Docker Engine and the Docker Compose plugin for your Linux distribution, then run these commands from the project directory:
+
+```sh
+cp .env.example .env
 docker compose up --build -d
 ```
 
@@ -38,7 +40,7 @@ Open http://localhost:8080
 
 Stop:
 
-```powershell
+```sh
 docker compose down
 ```
 

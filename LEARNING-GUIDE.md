@@ -1,23 +1,18 @@
 # Deploy this yourself — every move
 
-Do these in **PowerShell**. Keep Docker Desktop running.
+Follow these steps in a **Linux terminal**. Docker Desktop is not required; install Docker Engine and the Docker Compose plugin for your distribution first.
 
-You already have Docker:
-
-- Docker 29.8.0
-- Docker Compose v5.5.1
-
-Project folder:
+Open a terminal in the project folder. To find the current folder:
 
 ```text
-C:\Users\shaik\personal-docker-lab
+pwd
 ```
 
 ---
 
 ## Move 1 — Prove Docker is alive
 
-```powershell
+```sh
 docker version
 docker compose version
 docker ps
@@ -25,15 +20,22 @@ docker ps
 
 What you should see: client + server versions, and a list of running containers (maybe empty).
 
-If the **server** part fails, start Docker Desktop and wait until it says running.
+If the server part fails, check that the Docker service is running. On systemd-based distributions:
+
+```sh
+sudo systemctl status docker
+sudo systemctl start docker
+```
+
+If you see a permission error, either run Docker commands with `sudo` or configure your Linux user for Docker access according to Docker's documentation.
 
 ---
 
 ## Move 2 — Enter the project
 
-```powershell
-cd C:\Users\shaik\personal-docker-lab
-dir
+```sh
+cd /path/to/docker_deployment-
+ls -la
 ```
 
 Read `Dockerfile` and `docker-compose.yml` before you run anything. The comments in those files are part of the lesson.
@@ -42,12 +44,12 @@ Read `Dockerfile` and `docker-compose.yml` before you run anything. The comments
 
 ## Move 3 — Create your local env file
 
-```powershell
-copy .env.example .env
-notepad .env
+```sh
+cp .env.example .env
+nano .env
 ```
 
-You can leave the defaults. `.env` is gitignored so secrets never go to GitHub.
+You can leave the defaults for local practice. `.env` is gitignored, so it will not be added to Git by default. Replace the sample `SECRET_KEY` before using this app beyond local practice.
 
 ---
 
@@ -55,7 +57,7 @@ You can leave the defaults. `.env` is gitignored so secrets never go to GitHub.
 
 This teaches you the image vs container difference.
 
-```powershell
+```sh
 docker build -t personal-task-board:local .
 ```
 
@@ -69,7 +71,7 @@ What happened:
 
 Check it:
 
-```powershell
+```sh
 docker images personal-task-board
 ```
 
@@ -77,7 +79,7 @@ docker images personal-task-board
 
 ## Move 5 — Run one container by hand (optional, good for learning)
 
-```powershell
+```sh
 docker run --name task-board-manual -p 8080:8000 -d personal-task-board:local
 ```
 
@@ -93,7 +95,7 @@ Open http://localhost:8080
 
 Inspect:
 
-```powershell
+```sh
 docker ps
 docker logs task-board-manual
 docker exec -it task-board-manual /bin/sh
@@ -109,7 +111,7 @@ exit
 
 Stop and remove this manual container before using Compose (same port 8080):
 
-```powershell
+```sh
 docker stop task-board-manual
 docker rm task-board-manual
 ```
@@ -120,7 +122,7 @@ docker rm task-board-manual
 
 Compose builds, names, ports, env, and the data volume for you.
 
-```powershell
+```sh
 docker compose up --build -d
 ```
 
@@ -132,7 +134,7 @@ docker compose up --build -d
 
 Then:
 
-```powershell
+```sh
 docker compose ps
 docker compose logs -f web
 ```
@@ -147,7 +149,7 @@ Add a task in the UI. That writes SQLite at `/data/tasks.db` **inside** the cont
 
 ## Move 7 — Prove persistence
 
-```powershell
+```sh
 docker compose down
 docker compose up -d
 ```
@@ -163,7 +165,7 @@ volumes:
 
 Wipe data only when you mean it:
 
-```powershell
+```sh
 docker compose down -v
 ```
 
@@ -173,9 +175,9 @@ docker compose down -v
 
 ## Move 8 — Useful debug commands
 
-```powershell
+```sh
 docker compose ps
-docker inspect task-board --format "{{.State.Health.Status}}"
+docker inspect task-board --format '{{.State.Health.Status}}'
 docker compose logs --tail 50 web
 docker volume ls
 docker compose down
@@ -187,8 +189,8 @@ docker compose down
 
 Only after the app runs.
 
-```powershell
-cd C:\Users\shaik\personal-docker-lab
+```sh
+cd /path/to/docker_deployment-
 git status
 git add .
 git commit -m "Add Dockerized personal task board for DevOps practice"
@@ -196,7 +198,7 @@ git commit -m "Add Dockerized personal task board for DevOps practice"
 
 On GitHub: create an empty repo (no README). Then:
 
-```powershell
+```sh
 git remote add origin https://github.com/YOUR_USERNAME/personal-docker-lab.git
 git push -u origin main
 ```
@@ -208,6 +210,6 @@ Confirm `.env` is **not** in `git status`.
 ## Common mistakes
 
 - **Port already in use:** change `APP_PORT` in `.env` to `8081`
-- **Docker daemon not running:** start Docker Desktop
+- **Docker daemon not running:** start the Docker service (for example, `sudo systemctl start docker` on systemd-based distributions)
 - **Old container still using 8080:** `docker ps` then `docker stop <name>`
 - **Changed Python code but UI looks old:** `docker compose up --build -d`
