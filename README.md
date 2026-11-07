@@ -29,7 +29,7 @@ personal-docker-lab/
 
 ## Quick start (Linux)
 
-Install Docker Engine and the Docker Compose plugin for your Linux distribution, then run these commands from the project directory:
+Install Docker Engine and the Docker Compose plugin for your Linux distribution by following [LEARNING-GUIDE.md](./LEARNING-GUIDE.md). Then run these commands from the project directory:
 
 ```sh
 cp .env.example .env

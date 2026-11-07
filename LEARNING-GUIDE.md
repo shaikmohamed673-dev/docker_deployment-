@@ -1,6 +1,6 @@
 # Deploy this yourself — every move
 
-Follow these steps in a **Linux terminal**. Docker Desktop is not required; install Docker Engine and the Docker Compose plugin for your distribution first.
+Follow these steps in a **Linux terminal**. Docker Desktop is not required. The installation steps below are for Ubuntu and Debian; for other distributions, use the [official Docker Engine installation guide](https://docs.docker.com/engine/install/).
 
 Open a terminal in the project folder. To find the current folder:
 
@@ -10,28 +10,82 @@ pwd
 
 ---
 
-## Move 1 — Prove Docker is alive
+## Move 1 — Install Docker Engine and Compose
+
+Docker Compose is installed as the Compose plugin, so you can use it with `docker compose`.
+
+### Ubuntu
+
+Add Docker's official package repository and install Docker Engine, the CLI, and the Compose plugin:
 
 ```sh
-docker version
-docker compose version
-docker ps
+sudo apt update
+sudo apt install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+sudo tee /etc/apt/sources.list.d/docker.sources <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: stable
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+sudo apt update
+sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
+
+### Debian
+
+Add Docker's official package repository and install Docker Engine, the CLI, and the Compose plugin:
+
+```sh
+sudo apt update
+sudo apt install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+sudo tee /etc/apt/sources.list.d/docker.sources <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/debian
+Suites: $(. /etc/os-release && echo "$VERSION_CODENAME")
+Components: stable
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+sudo apt update
+sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
+
+On other distributions, follow Docker's instructions for your package manager and install both **Docker Engine** and the **Docker Compose plugin**.
+
+---
+
+## Move 2 — Prove Docker is alive
+
+```sh
+sudo docker version
+sudo docker compose version
+sudo docker ps
 ```
 
 What you should see: client + server versions, and a list of running containers (maybe empty).
 
-If the server part fails, check that the Docker service is running. On systemd-based distributions:
+If Docker is not running on a systemd-based distribution:
 
 ```sh
 sudo systemctl status docker
 sudo systemctl start docker
 ```
 
-If you see a permission error, either run Docker commands with `sudo` or configure your Linux user for Docker access according to Docker's documentation.
+Use `sudo` before Docker commands if your user does not have permission. For optional non-root access, follow Docker's [Linux post-installation instructions](https://docs.docker.com/engine/install/linux-postinstall/); membership in the `docker` group grants root-level privileges.
 
 ---
 
-## Move 2 — Enter the project
+## Move 3 — Enter the project
+
+If you used `sudo` to run the Docker checks above, prepend `sudo` to the Docker commands in the remaining steps as well.
 
 ```sh
 cd /path/to/docker_deployment-
@@ -42,7 +96,7 @@ Read `Dockerfile` and `docker-compose.yml` before you run anything. The comments
 
 ---
 
-## Move 3 — Create your local env file
+## Move 4 — Create your local env file
 
 ```sh
 cp .env.example .env
@@ -53,7 +107,7 @@ You can leave the defaults for local practice. `.env` is gitignored, so it will 
 
 ---
 
-## Move 4 — Build the image (without starting the app yet)
+## Move 5 — Build the image (without starting the app yet)
 
 This teaches you the image vs container difference.
 
@@ -77,7 +131,7 @@ docker images personal-task-board
 
 ---
 
-## Move 5 — Run one container by hand (optional, good for learning)
+## Move 6 — Run one container by hand (optional, good for learning)
 
 ```sh
 docker run --name task-board-manual -p 8080:8000 -d personal-task-board:local
@@ -118,7 +172,7 @@ docker rm task-board-manual
 
 ---
 
-## Move 6 — The real way: Compose
+## Move 7 — The real way: Compose
 
 Compose builds, names, ports, env, and the data volume for you.
 
@@ -147,7 +201,7 @@ Add a task in the UI. That writes SQLite at `/data/tasks.db` **inside** the cont
 
 ---
 
-## Move 7 — Prove persistence
+## Move 8 — Prove persistence
 
 ```sh
 docker compose down
@@ -173,7 +227,7 @@ docker compose down -v
 
 ---
 
-## Move 8 — Useful debug commands
+## Move 9 — Useful debug commands
 
 ```sh
 docker compose ps
@@ -185,7 +239,7 @@ docker compose down
 
 ---
 
-## Move 9 — After practice, push to GitHub
+## Move 10 — After practice, push to GitHub
 
 Only after the app runs.
 
