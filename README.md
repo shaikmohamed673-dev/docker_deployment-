@@ -16,10 +16,8 @@ personal-docker-lab/
 ├── Dockerfile              # recipe for the image
 ├── docker-compose.yml      # how to run the container
 ├── .dockerignore           # files that must NOT go into the image
-├── .gitignore              # files that must NOT go to GitHub
 ├── .env.example            # sample environment variables
 ├── requirements.txt        # Python packages
-├── LEARNING-GUIDE.md       # do-this-yourself deploy steps
 ├── app/
 │   ├── main.py             # Flask API + pages
 │   ├── templates/          # HTML
